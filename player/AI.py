@@ -252,10 +252,10 @@ class AI:
 
     def calculateb(self,gametiles):
         
-        # STARTS OFF WITH A VALUE OF 0
-        #if gametiles[y][x].pieceonTile.tostring()=='P':
-        #             value=value-100
-        value=0
+        # All values start off as 0
+        material=0
+        positional=0
+        promotion=0
 
         # These are the point values assigned to each piece according to Polish chess programmer Tomasz Michniewski
         king_val = 10000
@@ -267,7 +267,7 @@ class AI:
 
         # Point Square Tabels. These are the positional points assigned to each piece.
         pawn_PST = [
-            [0,  0,  0,  0,  0,  0,  0,  0]
+            [0,  0,  0,  0,  0,  0,  0,  0],
             [50, 50, 50, 50, 50, 50, 50, 50],
             [10, 10, 20, 30, 30, 20, 10, 10],
             [5,  5, 10, 25, 25, 10,  5,  5],
@@ -328,48 +328,65 @@ class AI:
         ]
         for x in range(8):
             for y in range(8):
-                if gametiles[y][x].pieceonTile.tostring()=='P':
-                    value=value-pawn_val
-                    value=value-pawn_PST[y][x]
-                if gametiles[y][x].pieceonTile.tostring()=='p':
-                    value=value+pawn_val
-                    value=value+pawn_PST[y][x]
-
-                if gametiles[y][x].pieceonTile.tostring()=='R':
-                    value=value-rook_val
-                    value=value-rook_PST[y][x]
-                if gametiles[y][x].pieceonTile.tostring()=='r':
-                    value=value-rook_val
-                    value=value-rook_PST[y][x]
-
-                if gametiles[y][x].pieceonTile.tostring()=='N':
-                    value=value-knight_val
-                    value=value-knight_PST[y][x]
-                if gametiles[y][x].pieceonTile.tostring()=='n':
-                    value=value-knight_val
-                    value=value-knight_PST[y][x]
-
-                if gametiles[y][x].pieceonTile.tostring()=='B':
-                    value=value-bishop_val
-                    value=value-bishop_PST[y][x]
-                if gametiles[y][x].pieceonTile.tostring()=='b':
-                    value=value-bishop_val
-                    value=value-bishop_PST[y][x]
-
-                if gametiles[y][x].pieceonTile.tostring()=='Q':
-                    value=value-queen_val
-                    value=value-queen_PST[y][x]
-                if gametiles[y][x].pieceonTile.tostring()=='q':
-                    value=value-queen_val
-                    value=value-queen_PST[y][x]
-
-                if gametiles[y][x].pieceonTile.tostring()=='K':
-                    value=value-king_val
-                    value=value-king_PST[y][x]
-                if gametiles[y][x].pieceonTile.tostring()=='k':
-                    value=value-king_val
-                    value=value-king_PST[y][x]
-        return value
+                piece = gametiles[y][x].pieceonTile.tostring()
+                if piece =='P':
+                    material -= pawn_val # Material value
+                    positional -= pawn_PST[y][x] # Positional value
+                    # If pawn is more than halfway up the board, then reward more poitns for potential promotion.
+                    if x < 3:
+                        promotion -= 200
+                elif piece =='p':
+                    material += pawn_val
+                    positional += pawn_PST[y][x]
+                    # If pawn is more than halfway up the board, then reward more poitns for potential promotion.
+                    if x > 4:
+                        promotion += 200
+                elif piece =='R':
+                    material -= rook_val
+                    positional -= rook_PST[y][x]
+                elif piece =='r':
+                    material += rook_val
+                    positional += rook_PST[y][x]
+                elif piece =='N':
+                    material -= knight_val
+                    positional -= knight_PST[y][x]
+                elif piece =='n':
+                    material += knight_val
+                    positional += knight_PST[y][x]
+                elif piece =='B':
+                    material -= bishop_val
+                    positional -= bishop_PST[y][x]
+                elif piece =='b':
+                    material += bishop_val
+                    positional += bishop_PST[y][x]
+                elif piece =='Q':
+                    material -= queen_val
+                    positional -= queen_PST[y][x]
+                elif piece =='q':
+                    material += queen_val
+                    positional += queen_PST[y][x]
+                elif piece =='K':
+                    material -= king_val
+                    positional -= king_PST[y][x]
+                elif piece =='k':
+                    material += king_val
+                    positional += king_PST[y][x]
+                
+                # Center checking
+                # 3 and 4 are the actual center spaces and 2 and 5 are the spaces next to the center spaces.
+                if piece in ["P", "R", "N", "B", "Q"]:
+                    if x in [3, 4] and y in [3, 4]:
+                        positional -= 50
+                    elif x in [2, 5] and y in [2, 5]:
+                        positional -= 20
+                elif piece in ["p", "r", "n", "b", "q"]:
+                    if x in [3, 4] and y in [3, 4]:
+                        positional += 50
+                    elif x in [2, 5] and y in [2, 5]:
+                        positional += 20
+                
+        total = material + positional + promotion
+        return total
 
 
     def move(self,gametiles,y,x,n,m):
