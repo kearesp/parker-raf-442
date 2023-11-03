@@ -251,45 +251,124 @@ class AI:
 
 
     def calculateb(self,gametiles):
+        
+        # STARTS OFF WITH A VALUE OF 0
+        #if gametiles[y][x].pieceonTile.tostring()=='P':
+        #             value=value-100
         value=0
+
+        # These are the point values assigned to each piece according to Polish chess programmer Tomasz Michniewski
+        king_val = 10000
+        queen_val = 900
+        rook_val = 500
+        bishop_val = 330
+        knight_val = 320
+        pawn_val = 100
+
+        # Point Square Tabels. These are the positional points assigned to each piece.
+        pawn_PST = [
+            [0,  0,  0,  0,  0,  0,  0,  0]
+            [50, 50, 50, 50, 50, 50, 50, 50],
+            [10, 10, 20, 30, 30, 20, 10, 10],
+            [5,  5, 10, 25, 25, 10,  5,  5],
+            [0,  0,  0, 20, 20,  0,  0,  0],
+            [5, -5,-10,  0,  0,-10, -5,  5],
+            [5, 10, 10,-20,-20, 10, 10,  5],
+            [0,  0,  0,  0,  0,  0,  0,  0]
+        ]
+        rook_PST = [
+            [0,  0,  0,  0,  0,  0,  0,  0],
+            [5, 10, 10, 10, 10, 10, 10,  5],
+            [-5,  0,  0,  0,  0,  0,  0, -5],
+            [-5,  0,  0,  0,  0,  0,  0, -5],
+            [-5,  0,  0,  0,  0,  0,  0, -5],
+            [-5,  0,  0,  0,  0,  0,  0, -5],
+            [-5,  0,  0,  0,  0,  0,  0, -5],
+            [0,  0,  0,  5,  5,  0,  0,  0]
+        ]
+        knight_PST = [
+            [-50,-40,-30,-30,-30,-30,-40,-50],
+            [-40,-20,  0,  0,  0,  0,-20,-40],
+            [-30,  0, 10, 15, 15, 10,  0,-30],
+            [-30,  5, 15, 20, 20, 15,  5,-30],
+            [-30,  0, 15, 20, 20, 15,  0,-30],
+            [-30,  5, 10, 15, 15, 10,  5,-30],
+            [-40,-20,  0,  5,  5,  0,-20,-40],
+            [-50,-40,-30,-30,-30,-30,-40,-50],
+        ]
+        bishop_PST = [
+            [-20,-10,-10,-10,-10,-10,-10,-20],
+            [-10,  0,  0,  0,  0,  0,  0,-10],
+            [-10,  0,  5, 10, 10,  5,  0,-10],
+            [-10,  5,  5, 10, 10,  5,  5,-10],
+            [-10,  0, 10, 10, 10, 10,  0,-10],
+            [-10, 10, 10, 10, 10, 10, 10,-10],
+            [-10,  5,  0,  0,  0,  0,  5,-10],
+            [-20,-10,-10,-10,-10,-10,-10,-20],
+        ]
+        queen_PST = [
+            [-20,-10,-10, -5, -5,-10,-10,-20],
+            [-10,  0,  0,  0,  0,  0,  0,-10],
+            [-10,  0,  5,  5,  5,  5,  0,-10],
+            [-5,  0,  5,  5,  5,  5,  0, -5],
+            [0,  0,  5,  5,  5,  5,  0, -5],
+            [-10,  5,  5,  5,  5,  5,  0,-10],
+            [-10,  0,  5,  0,  0,  0,  0,-10],
+            [-20,-10,-10, -5, -5,-10,-10,-20]
+        ]
+        king_PST = [
+            [-30,-40,-40,-50,-50,-40,-40,-30],
+            [-30,-40,-40,-50,-50,-40,-40,-30],
+            [-30,-40,-40,-50,-50,-40,-40,-30],
+            [-30,-40,-40,-50,-50,-40,-40,-30],
+            [-20,-30,-30,-40,-40,-30,-30,-20],
+            [-10,-20,-20,-20,-20,-20,-20,-10],
+            [20, 20,  0,  0,  0,  0, 20, 20],
+            [20, 30, 10,  0,  0, 10, 30, 20]
+        ]
         for x in range(8):
             for y in range(8):
-                    if gametiles[y][x].pieceonTile.tostring()=='P':
-                        value=value-100
+                if gametiles[y][x].pieceonTile.tostring()=='P':
+                    value=value-pawn_val
+                    value=value-pawn_PST[y][x]
+                if gametiles[y][x].pieceonTile.tostring()=='p':
+                    value=value+pawn_val
+                    value=value+pawn_PST[y][x]
 
-                    if gametiles[y][x].pieceonTile.tostring()=='N':
-                        value=value-350
+                if gametiles[y][x].pieceonTile.tostring()=='R':
+                    value=value-rook_val
+                    value=value-rook_PST[y][x]
+                if gametiles[y][x].pieceonTile.tostring()=='r':
+                    value=value-rook_val
+                    value=value-rook_PST[y][x]
 
-                    if gametiles[y][x].pieceonTile.tostring()=='B':
-                        value=value-350
+                if gametiles[y][x].pieceonTile.tostring()=='N':
+                    value=value-knight_val
+                    value=value-knight_PST[y][x]
+                if gametiles[y][x].pieceonTile.tostring()=='n':
+                    value=value-knight_val
+                    value=value-knight_PST[y][x]
 
-                    if gametiles[y][x].pieceonTile.tostring()=='R':
-                        value=value-525
+                if gametiles[y][x].pieceonTile.tostring()=='B':
+                    value=value-bishop_val
+                    value=value-bishop_PST[y][x]
+                if gametiles[y][x].pieceonTile.tostring()=='b':
+                    value=value-bishop_val
+                    value=value-bishop_PST[y][x]
 
-                    if gametiles[y][x].pieceonTile.tostring()=='Q':
-                        value=value-1000
+                if gametiles[y][x].pieceonTile.tostring()=='Q':
+                    value=value-queen_val
+                    value=value-queen_PST[y][x]
+                if gametiles[y][x].pieceonTile.tostring()=='q':
+                    value=value-queen_val
+                    value=value-queen_PST[y][x]
 
-                    if gametiles[y][x].pieceonTile.tostring()=='K':
-                        value=value-10000
-
-                    if gametiles[y][x].pieceonTile.tostring()=='p':
-                        value=value+100
-
-                    if gametiles[y][x].pieceonTile.tostring()=='n':
-                        value=value+350
-
-                    if gametiles[y][x].pieceonTile.tostring()=='b':
-                        value=value+350
-
-                    if gametiles[y][x].pieceonTile.tostring()=='r':
-                        value=value+525
-
-                    if gametiles[y][x].pieceonTile.tostring()=='q':
-                        value=value+1000
-
-                    if gametiles[y][x].pieceonTile.tostring()=='k':
-                        value=value+10000
-
+                if gametiles[y][x].pieceonTile.tostring()=='K':
+                    value=value-king_val
+                    value=value-king_PST[y][x]
+                if gametiles[y][x].pieceonTile.tostring()=='k':
+                    value=value-king_val
+                    value=value-king_PST[y][x]
         return value
 
 
