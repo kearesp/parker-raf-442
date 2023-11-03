@@ -333,13 +333,13 @@ class AI:
                     material -= pawn_val # Material value
                     positional -= pawn_PST[y][x] # Positional value
                     # If pawn is more than halfway up the board, then reward more poitns for potential promotion.
-                    if x > 3:
+                    if x < 3:
                         promotion -= 200
                 elif piece =='p':
                     material += pawn_val
                     positional += pawn_PST[y][x]
                     # If pawn is more than halfway up the board, then reward more poitns for potential promotion.
-                    if x < 4:
+                    if x > 4:
                         promotion += 200
                 elif piece =='R':
                     material -= rook_val
